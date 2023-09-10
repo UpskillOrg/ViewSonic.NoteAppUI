@@ -1,0 +1,67 @@
+﻿<Window
+    x:Class="ViewSonic.NoteApp.DrawingWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:noteApp="clr-namespace:ViewSonic.NoteApp"
+    Title="Whiteboard session"
+    FontSize="18"
+    Icon="Themes/AppIcon.png"
+    KeyDown="DrawingWindow_OnKeyDown"
+    mc:Ignorable="d">
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/ViewSonic.NoteApp;component/Themes/Cursors.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Window.Resources>
+    <Grid>
+        <noteApp:AnnotationCanvas
+            x:Name="AnnotationCanvas"
+            BorderBrush="#FFABFFA8"
+            BorderThickness="3" />
+        <Border
+            x:Name="SharingIndicator"
+            Width="654"
+            Height="129"
+            BorderThickness="1"
+            CornerRadius="10">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="0.5*" />
+                    <RowDefinition Height="0.5*" />
+                </Grid.RowDefinitions>
+                <TextBlock
+                    Margin="10,20,10,0"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    FontSize="32"
+                    Foreground="{DynamicResource SharingIndicator.PrimaryTextBrush}"
+                    Text="{Binding RelativeSource={RelativeSource AncestorType={x:Type noteApp:DrawingWindow}}, Path=SharingIndicatorHeader}" />
+                <TextBlock
+                    Grid.Row="1"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    FontSize="25"
+                    Foreground="{DynamicResource SharingIndicator.SecondaryTextBrush}"
+                    Text="{Binding RelativeSource={RelativeSource AncestorType={x:Type noteApp:DrawingWindow}}, Path=SharingIndicatorSubHeader}" />
+            </Grid>
+            <Border.Style>
+                <Style TargetType="Border">
+                    <Setter Property="Opacity" Value="0" />
+                    <Style.Triggers>
+                        <Trigger Property="Opacity" Value="1">
+                            <Setter Property="Visibility" Value="Visible" />
+                        </Trigger>
+                        <Trigger Property="Opacity" Value="0">
+                            <Setter Property="Visibility" Value="Collapsed" />
+                        </Trigger>
+                    </Style.Triggers>
+                </Style>
+            </Border.Style>
+        </Border>
+    </Grid>
+</Window>
+

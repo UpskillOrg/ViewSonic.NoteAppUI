@@ -1,0 +1,22 @@
+﻿<Project Sdk="Microsoft.NET.Sdk"> 
+  <PropertyGroup>
+    <UseWindowsForms>true</UseWindowsForms>
+    <UseWPF>true</UseWPF>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net6.0-windows</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Resource Include="Themes\AppIcon.png" />
+    <Resource Include="Themes\Cursors\Brush_Cursor.cur" />
+    <Resource Include="Themes\Cursors\Eraser_Cursor.cur" />
+    <Resource Include="Themes\Cursors\Text_Cursor.cur" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="App.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </None>
+  </ItemGroup>
+  
+</Project>

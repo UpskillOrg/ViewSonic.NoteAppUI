@@ -1,0 +1,768 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="clr-namespace:ViewSonic.NoteApp"
+    xmlns:toolbar="clr-namespace:ViewSonic.NoteApp.Toolbar"
+    xmlns:toolbarSubItems="clr-namespace:ViewSonic.NoteApp.Toolbar.ToolbarSubItems">
+    <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary Source="/ViewSonic.NoteApp;component/Themes/Cursors.xaml" />
+        <ResourceDictionary Source="/ViewSonic.NoteApp;component/Themes/Colors/Default.xaml" />
+    </ResourceDictionary.MergedDictionaries>
+ 
+    <!--
+        Not really sure what the purpose of these colors.
+        FillColor is used in Rectangles with opacity = 0
+        StrokeColor is used in Rectangle with Visibility = Collapsed
+        Is is suppose to be shadow?
+        I'll leave it as is for now.
+    -->
+    <SolidColorBrush x:Key="FillColor" Color="#FFBADDE9" />
+    <SolidColorBrush x:Key="StrokeColor" Color="#FF6DBDD1" />
+
+    <Style x:Key="BjnFocusVisualStyleDark">
+        <Setter Property="Control.Template">
+            <Setter.Value>
+                <ControlTemplate>
+                    <Rectangle SnapsToDevicePixels="true" Stroke="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}" StrokeThickness="3" />
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Polygon x:Key="Triangle"
+        x:Shared="False"
+        Fill="{Binding Foreground, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ContentControl}}"
+        Points="5,0 5,5 0,5"
+        Stroke="{Binding Foreground, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ContentControl}}" />
+
+    <ControlTemplate x:Key="RoundButtonTemplate" TargetType="Button">
+        <Grid>
+            <Ellipse Fill="{TemplateBinding Background}" />
+            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" Content="{TemplateBinding Content}" />
+        </Grid>
+    </ControlTemplate>
+
+    <Viewbox x:Key="RemoveIcon" Width="8" Height="8" x:Shared="False">
+        <Path Width="31.6666" Height="31.6667"
+            Data="F1 M 26.9166,22.1667L 37.9999,33.25L 49.0832,22.1668L 53.8332,26.9168L 42.7499,38L 53.8332,49.0834L 49.0833,53.8334L 37.9999,42.75L 26.9166,53.8334L 22.1666,49.0833L 33.25,38L 22.1667,26.9167L 26.9166,22.1667 Z "
+            Fill="{Binding Foreground, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Button}}"
+            Stretch="Uniform" />
+    </Viewbox>
+
+    <Style TargetType="{x:Type local:AnnotationCanvas}">
+        <Setter Property="IsTabStop" Value="False" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type local:AnnotationCanvas}">
+                    <Border BorderThickness="{TemplateBinding BorderThickness}" BorderBrush="{TemplateBinding BorderBrush}" Background="{TemplateBinding Background}">
+                        <Grid>
+                            <ContentPresenter x:Name="PART_Content" />
+                            <InkCanvas x:Name="PART_Inking" Focusable="False" Background="WhiteSmoke" />
+                        </Grid>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <ControlTemplate x:Key="ReadOnlyTextItem" TargetType="{x:Type local:CanvasTextItem}">
+        <Grid x:Name="ItemLayout">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+            <Button x:Name="RemoveButton" Grid.Row="0" Grid.Column="1"
+                Width="12" Height="12"
+                Content="{StaticResource RemoveIcon}" Template="{StaticResource RoundButtonTemplate}"
+                Visibility="Hidden"
+                Background="{StaticResource Drawing.RemoveButton.BackgroundBrush}"
+                Foreground="{StaticResource Drawing.RemoveButton.ForegroundBrush}" />
+            <Border Grid.Row="1" Grid.Column="0" BorderThickness="{TemplateBinding BorderThickness}" BorderBrush="{StaticResource Drawing.TextBorderBrush}">
+                <TextBlock Text="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Text, UpdateSourceTrigger=PropertyChanged}"
+                    TextWrapping="Wrap"
+                    Background="{TemplateBinding Background}"
+                    Foreground="{TemplateBinding Foreground}"
+                    FontSize="{TemplateBinding FontSize}" />
+            </Border>
+        </Grid>
+    </ControlTemplate>
+
+    <ControlTemplate x:Key="EditableTextItem" TargetType="{x:Type local:CanvasTextItem}">
+        <Grid FocusManager.FocusedElement="{Binding ElementName=TextItem}">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+            <Button x:Name="RemoveButton" Grid.Row="0" Grid.Column="1"
+                Width="12" Height="12"
+                Content="{StaticResource RemoveIcon}" Cursor="Arrow" Template="{StaticResource RoundButtonTemplate}">
+                <Button.Style>
+                    <Style TargetType="{x:Type Button}">
+                        <Setter Property="Background" Value="{StaticResource Drawing.RemoveButton.BackgroundBrush}" />
+                        <Setter Property="Foreground" Value="{StaticResource Drawing.RemoveButton.ForegroundBrush}" />
+                        <Style.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="{StaticResource Drawing.RemoveButton.HoverBackgroundBrush}" />
+                                <Setter Property="Foreground" Value="{StaticResource Drawing.RemoveButton.HoverForegroundBrush}" />
+                            </Trigger>
+                        </Style.Triggers>
+                    </Style>
+                </Button.Style>
+            </Button>
+            <Border Grid.Row="1" Grid.Column="0" BorderThickness="{TemplateBinding BorderThickness}">
+                <Border.BorderBrush>
+                    <VisualBrush>
+                        <VisualBrush.Visual>
+                            <Rectangle Width="{Binding RelativeSource={RelativeSource AncestorType={x:Type Border}}, Path=ActualWidth}"
+                                Height="{Binding RelativeSource={RelativeSource AncestorType={x:Type Border}}, Path=ActualHeight}"
+                                RadiusX="4" RadiusY="4" Stroke="{StaticResource Drawing.TextBorderBrush}" StrokeDashArray="5 5"
+                                StrokeThickness="2" />
+                        </VisualBrush.Visual>
+                    </VisualBrush>
+                </Border.BorderBrush>
+                <Grid>
+                    <TextBox x:Name="TextItem"
+                        BorderThickness="0"
+                        AcceptsReturn="{TemplateBinding AcceptsReturn}"
+                        Text="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Text, UpdateSourceTrigger=PropertyChanged}"
+                        TextWrapping="Wrap"
+                        Background="{TemplateBinding Background}"
+                        Foreground="{TemplateBinding Foreground}"
+                        FontSize="{TemplateBinding FontSize}" />
+                    <TextBlock x:Name="Placeholder"
+                        IsHitTestVisible="False" Text="{TemplateBinding PlaceholderText}"
+                        Foreground="{TemplateBinding PlaceholderTextColor}"
+                        FontSize="12" FontFamily="{TemplateBinding FontFamily}" />
+                </Grid>
+            </Border>
+        </Grid>
+    </ControlTemplate>
+
+    <Style TargetType="{x:Type local:CanvasTextItem}">
+        <Setter Property="PlaceholderTextColor" Value="{StaticResource Drawing.PlaceholderTextBrush}" />
+        <Style.Triggers>
+            <Trigger Property="IsEditing" Value="True">
+                <Setter Property="IsReadOnly" Value="False" />
+                <Setter Property="Template" Value="{StaticResource EditableTextItem}" />
+            </Trigger>
+            <Trigger Property="IsEditing" Value="False">
+                <Setter Property="IsReadOnly" Value="True" />
+                <Setter Property="Template" Value="{StaticResource ReadOnlyTextItem}" />
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+    <ControlTemplate x:Key="DraggableToolbarTemplate" TargetType="Thumb">
+        <Border Width="{TemplateBinding Width}" Height="{TemplateBinding Height}"
+            BorderThickness="1" BorderBrush="{TemplateBinding BorderBrush}" CornerRadius="4 4 0 0"
+            Background="{TemplateBinding Background}">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="0.5*" />
+                    <RowDefinition Height="0.5*" />
+                </Grid.RowDefinitions>
+                <Rectangle Grid.Row="0"
+                    Height="2"
+                    Margin="5 2 5 0"
+                    VerticalAlignment="Bottom"
+                    Fill="{StaticResource Toolbar.DraggableItem.ForegroundBrush}" />
+                <Rectangle Grid.Row="1"
+                    Height="2"
+                    Margin="5 2 5 0"
+                    VerticalAlignment="Top"
+                    Fill="{StaticResource Toolbar.DraggableItem.ForegroundBrush}" />
+            </Grid>
+        </Border>
+    </ControlTemplate>
+
+    <Style TargetType="{x:Type toolbar:DraggableToolbarItem}">
+        <Setter Property="Cursor" Value="Hand" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type toolbar:DraggableToolbarItem}">
+                    <Thumb x:Name="DraggableZone" BorderBrush="{TemplateBinding BorderBrush}" Template="{StaticResource DraggableToolbarTemplate}" Background="{TemplateBinding Background}" />
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style TargetType="{x:Type toolbar:ColorPickerToolbarItem}">
+        <Setter Property="IsTabStop" Value="False" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type toolbar:ColorPickerToolbarItem}">
+                    <Grid Background="{TemplateBinding Background}">
+                        <Border Width="24" Height="24"
+                            BorderThickness="1" BorderBrush="{StaticResource Toolbar.ColorItem.ColorBorderBrush}"
+                            CornerRadius="4"
+                            Background="{Binding BrushSubItem.Brush, RelativeSource={RelativeSource TemplatedParent}}" />
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Style.Triggers>
+            <Trigger Property="IsSelected" Value="True">
+                <Setter Property="Background" Value="{StaticResource Toolbar.SelectedItem.BackgroundBrush}" />
+                <Setter Property="Foreground" Value="{StaticResource Toolbar.SelectedItem.ForegroundBrush}" />
+            </Trigger>
+            <Trigger Property="IsSelected" Value="False">
+                <Setter Property="Background" Value="{StaticResource Toolbar.BackgroundBrush}" />
+                <Setter Property="Foreground" Value="{StaticResource Toolbar.ForegroundBrush}" />
+            </Trigger>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Background" Value="{StaticResource Toolbar.SelectedItem.BackgroundBrush}" />
+                <Setter Property="Foreground" Value="{StaticResource Toolbar.SelectedItem.ForegroundBrush}" />
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+    <Style TargetType="{x:Type toolbar:TextToolbarItem}">
+        <Setter Property="IsTabStop" Value="False" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type toolbar:TextToolbarItem}">
+                    <Grid Background="{TemplateBinding Background}">
+                        <ContentControl HorizontalAlignment="Center" VerticalAlignment="Center"
+                            HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
+                            IsTabStop="False">
+                            <Grid>
+                                <Polyline FillRule="EvenOdd" Points="0 3 0 0.0001 18 0.0001 18 3" Stroke="{TemplateBinding Foreground}" StrokeThickness="2" />
+                                <Path Data="m 9 0.8184 v 17.182" Stroke="{TemplateBinding Foreground}" StrokeThickness="2" />
+                                <Path Data="M 4 18.0362 H 14" Stroke="{TemplateBinding Foreground}" StrokeThickness="2" />
+                            </Grid>
+                        </ContentControl>
+                        <ContentControl HorizontalAlignment="Right" VerticalAlignment="Bottom"
+                            Content="{StaticResource Triangle}" IsTabStop="False"
+                            Foreground="{TemplateBinding Foreground}" />
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Style.Triggers>
+            <Trigger Property="IsToggled" Value="True">
+                <Setter Property="Background" Value="{StaticResource Toolbar.SelectedItem.BackgroundBrush}" />
+                <Setter Property="Foreground" Value="{StaticResource Toolbar.SelectedItem.ForegroundBrush}" />
+            </Trigger>
+            <Trigger Property="IsToggled" Value="False">
+                <Setter Property="Background" Value="{StaticResource Toolbar.BackgroundBrush}" />
+                <Setter Property="Foreground" Value="{StaticResource Toolbar.ForegroundBrush}" />
+            </Trigger>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Background" Value="{StaticResource Toolbar.SelectedItem.BackgroundBrush}" />
+                <Setter Property="Foreground" Value="{StaticResource Toolbar.SelectedItem.ForegroundBrush}" />
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+    <Style TargetType="{x:Type toolbar:PenToolbarItem}">
+        <Setter Property="IsTabStop" Value="False" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type toolbar:PenToolbarItem}">
+                    <Grid Background="{TemplateBinding Background}">
+                        <ContentControl HorizontalAlignment="Center" VerticalAlignment="Center" VerticalContentAlignment="Center" IsTabStop="False">
+                            <Grid>
+                                <Canvas>
+                                    <Canvas.RenderTransform>
+                                        <RotateTransform Angle="30" CenterX="3.7572015" CenterY="19.99326" />
+                                    </Canvas.RenderTransform>
+                                    <Canvas>
+                                        <Path Stroke="{TemplateBinding Foreground}" StrokeThickness="2">
+                                            <Path.Data>
+                                                <PathGeometry Figures="M 0 0.49826741 C 0 0.22308192 0.22788048 0 0.49100518 0 H 5.5089948 C 5.7801695 0 6 0.21990657 6 0.49826741 V 13.501733 c 0 0.275185 -0.09954 0.697814 -0.2219324 0.943173 l -0.5561352 1.11488 c -0.1225699 0.245715 -0.4369898 0.444906 -0.7124109 0.444906 h -3.019043 c -0.2708838 0 -0.59001826 -0.199547 -0.71241091 -0.444906 L 0.22193241 14.444906 C 0.09936252 14.199191 0 13.780093 0 13.501733 Z" FillRule="EvenOdd" />
+                                            </Path.Data>
+                                        </Path>
+                                        <Path Stroke="{TemplateBinding Foreground}" StrokeEndLineCap="Square" StrokeStartLineCap="Square" StrokeThickness="2">
+                                            <Path.Data>
+                                                <PathGeometry Figures="m 0.5 4 h 5" FillRule="EvenOdd" />
+                                            </Path.Data>
+                                        </Path>
+                                        <Path Stroke="{TemplateBinding Foreground}" StrokeEndLineCap="Square" StrokeStartLineCap="Square" StrokeThickness="2">
+                                            <Path.Data>
+                                                <PathGeometry Figures="m 0.5 13 h 5" FillRule="EvenOdd" />
+                                            </Path.Data>
+                                        </Path>
+                                    </Canvas>
+                                    <Path Stroke="{TemplateBinding Foreground}" StrokeThickness="2">
+                                        <Path.Data>
+                                            <PathGeometry Figures="m 1 16.10445 -0.0879675 3.841685 c -0.006295 0.274923 0.1760888 0.389547 0.4194511 0.249042 L 4.7878256 18.199657 5 16" FillRule="EvenOdd" />
+                                        </Path.Data>
+                                    </Path>
+                                </Canvas>
+                                <Path Stroke="{TemplateBinding Foreground}" StrokeEndLineCap="Round" StrokeStartLineCap="Round" StrokeThickness="2">
+                                    <Path.Data>
+                                        <PathGeometry Figures="m 9 19 c 0 0 1.513015 -1 3.00187 -1 1.488855 0 1.436338 1 3.840851 1 C 18.247233 19 19 16 19 16" FillRule="EvenOdd" />
+                                    </Path.Data>
+                                </Path>
+                            </Grid>
+                        </ContentControl>
+                        <ContentControl HorizontalAlignment="Right" VerticalAlignment="Bottom"
+                            Content="{StaticResource Triangle}" IsTabStop="False"
+                            Foreground="{TemplateBinding Foreground}" />
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Style.Triggers>
+            <Trigger Property="IsToggled" Value="True">
+                <Setter Property="Background" Value="{StaticResource Toolbar.SelectedItem.BackgroundBrush}" />
+                <Setter Property="Foreground" Value="{StaticResource Toolbar.SelectedItem.ForegroundBrush}" />
+            </Trigger>
+            <Trigger Property="IsToggled" Value="False">
+                <Setter Property="Background" Value="{StaticResource Toolbar.BackgroundBrush}" />
+                <Setter Property="Foreground" Value="{StaticResource Toolbar.ForegroundBrush}" />
+            </Trigger>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Background" Value="{StaticResource Toolbar.SelectedItem.BackgroundBrush}" />
+                <Setter Property="Foreground" Value="{StaticResource Toolbar.SelectedItem.ForegroundBrush}" />
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+    <Style TargetType="{x:Type toolbar:EraserToolbarItem}">
+        <Setter Property="IsTabStop" Value="False" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type toolbar:EraserToolbarItem}">
+                    <Grid Background="{TemplateBinding Background}">
+                        <ContentControl HorizontalAlignment="Center" VerticalAlignment="Center"
+                            HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
+                            IsTabStop="False">
+                            <Grid>
+                                <Canvas>
+                                    <Canvas.RenderTransform>
+                                        <RotateTransform Angle="30" CenterX="4.7500008" CenterY="17.727242" />
+                                    </Canvas.RenderTransform>
+                                    <Path HorizontalAlignment="Center" Data="m 0.65917807 1.0432137 c 0 -0.27616667 0.21627263 -0.500044 0.49739133 -0.500044 h 8.5053263 c 0.2747016 0 0.4965883 0.22000987 0.4955663 0.5001969 l -0.05495 15.0632564 -4.1734325 2.409533 -4.7645993 0.01903 C 0.88541064 18.536286 0.65918007 18.309693 0.65918007 18.03716 Z" Stroke="{TemplateBinding Foreground}" StrokeThickness="2" />
+                                    <Path Data="M 1 6 H 8.5" Stroke="{TemplateBinding Foreground}" StrokeEndLineCap="Square"
+                                        StrokeStartLineCap="Square" StrokeThickness="2" />
+                                </Canvas>
+                                <Path Data="m 14 19 h 5" Stroke="{TemplateBinding Foreground}" StrokeEndLineCap="Square"
+                                    StrokeStartLineCap="Square" StrokeThickness="2" />
+                            </Grid>
+                        </ContentControl>
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Style.Triggers>
+            <Trigger Property="IsToggled" Value="True">
+                <Setter Property="Background" Value="{StaticResource Toolbar.SelectedItem.BackgroundBrush}" />
+                <Setter Property="Foreground" Value="{StaticResource Toolbar.SelectedItem.ForegroundBrush}" />
+            </Trigger>
+            <Trigger Property="IsToggled" Value="False">
+                <Setter Property="Background" Value="{StaticResource Toolbar.BackgroundBrush}" />
+                <Setter Property="Foreground" Value="{StaticResource Toolbar.ForegroundBrush}" />
+            </Trigger>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Background" Value="{StaticResource Toolbar.SelectedItem.BackgroundBrush}" />
+                <Setter Property="Foreground" Value="{StaticResource Toolbar.SelectedItem.ForegroundBrush}" />
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+    <Style x:Key="ClearBoardButtonStyle" TargetType="{x:Type Button}">
+        <Setter Property="HorizontalContentAlignment" Value="Center" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+        <Setter Property="Padding" Value="1" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type Button}">
+                    <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="{TemplateBinding Background}">
+                        <Grid HorizontalAlignment="Center" VerticalAlignment="Center">
+                            <Path Data="M 1.5 3 3.3126154 17.500923 C 3.3470695 17.776556 3.589688 18 3.8729144 18 H 14.127086 c 0.27499 0 0.525874 -0.223683 0.560299 -0.499077 L 16.5 3 Z" Stroke="{TemplateBinding Foreground}" StrokeThickness="2" />
+                            <Path Data="M 5 0.49538899 C 5 0.2217932 5.2307968 0 5.5004358 0 H 12.499564 C 12.775947 0 13 0.2157526 13 0.49538899 V 3 H 5 Z" Stroke="{TemplateBinding Foreground}" StrokeThickness="2" />
+                            <Path Data="M 0 3 H 18" Stroke="{TemplateBinding Foreground}" StrokeEndLineCap="Square"
+                                StrokeStartLineCap="Square" StrokeThickness="2" />
+                            <Canvas>
+                                <Canvas.RenderTransform>
+                                    <RotateTransform Angle="-5" CenterX="84.163179" CenterY="-61.711297" />
+                                </Canvas.RenderTransform>
+                                <Path Data="M 1 0 V 7" Stroke="{TemplateBinding Foreground}" StrokeEndLineCap="Square"
+                                    StrokeStartLineCap="Square" StrokeThickness="2" />
+                            </Canvas>
+                            <Canvas>
+                                <Canvas.RenderTransform>
+                                    <RotateTransform Angle="5" CenterX=" -74.163179" CenterY=" 121.51883" />
+                                </Canvas.RenderTransform>
+                                <Path Data="M 1 0 V 7" Stroke="{TemplateBinding Foreground}" StrokeEndLineCap="Square"
+                                    StrokeStartLineCap="Square" StrokeThickness="2" />
+                            </Canvas>
+                        </Grid>
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter Property="Background" Value="{StaticResource Toolbar.SelectedItem.BackgroundBrush}" />
+                            <Setter Property="Foreground" Value="{StaticResource Toolbar.SelectedItem.ForegroundBrush}" />
+                        </Trigger>
+                        <Trigger Property="IsPressed" Value="False">
+                            <Setter Property="Background" Value="{StaticResource Toolbar.BackgroundBrush}" />
+                            <Setter Property="Foreground" Value="{StaticResource Toolbar.ForegroundBrush}" />
+                        </Trigger>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Background" Value="{StaticResource Toolbar.SelectedItem.BackgroundBrush}" />
+                            <Setter Property="Foreground" Value="{StaticResource Toolbar.SelectedItem.ForegroundBrush}" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="EndSessionButtonStyle" TargetType="{x:Type Button}">
+        <Setter Property="HorizontalContentAlignment" Value="Center" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+        <Setter Property="Padding" Value="1" />
+        <Setter Property="Background" Value="Red" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type Button}">
+                    <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="{TemplateBinding Background}">
+
+                        <ContentPresenter Margin="{TemplateBinding Padding}"
+                            HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                            VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                            Focusable="False" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
+                            TextElement.Foreground="{TemplateBinding Foreground}" />
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter Property="Background" Value="{StaticResource Toolbar.EndSessionItem.PressedBackgroundBrush}" />
+                            <Setter Property="Foreground" Value="{StaticResource Toolbar.EndSessionItem.PressedForegroundBrush}" />
+                        </Trigger>
+                        <Trigger Property="IsPressed" Value="False">
+                            <Setter Property="Background" Value="{StaticResource Toolbar.EndSessionItem.BackgroundBrush}" />
+                            <Setter Property="Foreground" Value="{StaticResource Toolbar.EndSessionItem.ForegroundBrush}" />
+                        </Trigger>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Background" Value="{StaticResource Toolbar.EndSessionItem.HoverBackgroundBrush}" />
+                            <Setter Property="Foreground" Value="{StaticResource Toolbar.EndSessionItem.HoverForegroundBrush}" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="UndoToolbarButtonStyle" TargetType="{x:Type Button}">
+        <Setter Property="HorizontalContentAlignment" Value="Center" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+        <Setter Property="Padding" Value="1" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type Button}">
+                    <Grid Background="{TemplateBinding Background}">
+                        <ContentControl HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                            VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                            HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
+                            IsTabStop="False">
+                            <Grid>
+                                <Path Stroke="{TemplateBinding Foreground}" StrokeThickness="2">
+                                    <Path.Data>
+                                        <PathGeometry Figures="M 9.0045344 18 H 9.5 C 14.19442 18 18 13.970563 18 9 18 4.0294372 14.19442 0 9.5 0 5.8845581 0 2.7963252 2.3900292 1.5677047 5.7593075" FillRule="EvenOdd" />
+                                    </Path.Data>
+                                </Path>
+                                <Polyline FillRule="EvenOdd" Points="0.70428191 0.70428191 0.70428191 5.70428191 5.70428191 5.70428191" Stroke="{TemplateBinding Foreground}" StrokeThickness="2" />
+                            </Grid>
+                        </ContentControl>
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <MultiTrigger>
+                            <MultiTrigger.Conditions>
+                                <Condition Property="IsEnabled" Value="True" />
+                                <Condition Property="IsPressed" Value="True" />
+                            </MultiTrigger.Conditions>
+                            <Setter Property="Background" Value="{StaticResource Toolbar.SelectedItem.BackgroundBrush}" />
+                            <Setter Property="Foreground" Value="{StaticResource Toolbar.SelectedItem.ForegroundBrush}" />
+                        </MultiTrigger>
+                        <MultiTrigger>
+                            <MultiTrigger.Conditions>
+                                <Condition Property="IsEnabled" Value="True" />
+                                <Condition Property="IsPressed" Value="False" />
+                            </MultiTrigger.Conditions>
+                            <Setter Property="Background" Value="{StaticResource Toolbar.BackgroundBrush}" />
+                            <Setter Property="Foreground" Value="{StaticResource Toolbar.ForegroundBrush}" />
+                        </MultiTrigger>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter Property="Background" Value="{StaticResource Toolbar.DisabledItem.BackgroundBrush}" />
+                            <Setter Property="Foreground" Value="{StaticResource Toolbar.DisabledItem.ForegroundBrush}" />
+                        </Trigger>
+                        <MultiTrigger>
+                            <MultiTrigger.Conditions>
+                                <Condition Property="IsEnabled" Value="True" />
+                                <Condition Property="IsPressed" Value="False" />
+                                <Condition Property="IsMouseOver" Value="True" />
+                            </MultiTrigger.Conditions>
+                            <Setter Property="Background" Value="{StaticResource Toolbar.SelectedItem.BackgroundBrush}" />
+                            <Setter Property="Foreground" Value="{StaticResource Toolbar.SelectedItem.ForegroundBrush}" />
+                        </MultiTrigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="RedoToolbarButtonStyle" TargetType="{x:Type Button}">
+        <Setter Property="HorizontalContentAlignment" Value="Center" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+        <Setter Property="Padding" Value="1" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type Button}">
+                    <Grid Background="{TemplateBinding Background}">
+                        <ContentControl HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                            VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                            HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
+                            IsTabStop="False">
+                            <Grid>
+                                <Grid.RenderTransform>
+                                    <MatrixTransform Matrix="-1 0 0 1 21 3" />
+                                </Grid.RenderTransform>
+                                <Path Stroke="{TemplateBinding Foreground}" StrokeThickness="2">
+                                    <Path.Data>
+                                        <PathGeometry Figures="M 9.0045344 18 H 9.5 C 14.19442 18 18 13.970563 18 9 18 4.0294372 14.19442 0 9.5 0 5.8845581 0 2.7963252 2.3900292 1.5677047 5.7593075" FillRule="EvenOdd" />
+                                    </Path.Data>
+                                </Path>
+                                <Polyline FillRule="EvenOdd" Points="0.70428191 0.70428191 0.70428191 5.70428191 5.70428191 5.70428191" Stroke="{TemplateBinding Foreground}" StrokeThickness="2" />
+                            </Grid>
+                        </ContentControl>
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <MultiTrigger>
+                            <MultiTrigger.Conditions>
+                                <Condition Property="IsEnabled" Value="True" />
+                                <Condition Property="IsPressed" Value="True" />
+                            </MultiTrigger.Conditions>
+                            <Setter Property="Background" Value="{StaticResource Toolbar.SelectedItem.BackgroundBrush}" />
+                            <Setter Property="Foreground" Value="{StaticResource Toolbar.SelectedItem.ForegroundBrush}" />
+                        </MultiTrigger>
+                        <MultiTrigger>
+                            <MultiTrigger.Conditions>
+                                <Condition Property="IsEnabled" Value="True" />
+                                <Condition Property="IsPressed" Value="False" />
+                            </MultiTrigger.Conditions>
+                            <Setter Property="Background" Value="{StaticResource Toolbar.BackgroundBrush}" />
+                            <Setter Property="Foreground" Value="{StaticResource Toolbar.ForegroundBrush}" />
+                        </MultiTrigger>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter Property="Background" Value="{StaticResource Toolbar.DisabledItem.BackgroundBrush}" />
+                            <Setter Property="Foreground" Value="{StaticResource Toolbar.DisabledItem.ForegroundBrush}" />
+                        </Trigger>
+                        <MultiTrigger>
+                            <MultiTrigger.Conditions>
+                                <Condition Property="IsEnabled" Value="True" />
+                                <Condition Property="IsPressed" Value="False" />
+                                <Condition Property="IsMouseOver" Value="True" />
+                            </MultiTrigger.Conditions>
+                            <Setter Property="Background" Value="{StaticResource Toolbar.SelectedItem.BackgroundBrush}" />
+                            <Setter Property="Foreground" Value="{StaticResource Toolbar.SelectedItem.ForegroundBrush}" />
+                        </MultiTrigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <DataTemplate x:Key="ColorPickerSubItemsDataTemplate">
+        <Border Width="24" Height="24"
+            BorderThickness="1" BorderBrush="{StaticResource Toolbar.ColorItem.ColorBorderBrush}"
+            CornerRadius="4"
+            Background="{Binding Brush}" />
+    </DataTemplate>
+
+    <DataTemplate x:Key="PenSubItemsDataTemplate">
+        <Ellipse Width="{Binding PenWidth}" Height="{Binding PenHeight}">
+            <Ellipse.Style>
+                <Style TargetType="Ellipse">
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding IsSelected}" Value="True">
+                            <Setter Property="Fill" Value="{StaticResource Picker.SelectedItem.ColorBrush}" />
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding IsSelected}" Value="False">
+                            <Setter Property="Fill" Value="{StaticResource Picker.Item.ColorBrush}" />
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Ellipse.Style>
+        </Ellipse>
+    </DataTemplate>
+
+    <DataTemplate x:Key="TextSubItemsDataTemplate">
+        <TextBlock Text="{Binding FontSize}" FontSize="12">
+            <TextBlock.Style>
+                <Style TargetType="TextBlock">
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding IsSelected}" Value="True">
+                            <Setter Property="Foreground" Value="{StaticResource Picker.SelectedItem.ColorBrush}" />
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding IsSelected}" Value="False">
+                            <Setter Property="Foreground" Value="{StaticResource Picker.Item.ColorBrush}" />
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </TextBlock.Style>
+        </TextBlock>
+    </DataTemplate>
+
+    <local:SubItemsTemplateSelector x:Key="SubItemsTemplateSelector" ColorPickerTemplate="{StaticResource ColorPickerSubItemsDataTemplate}" PenTemplate="{StaticResource PenSubItemsDataTemplate}" TextTemplate="{StaticResource TextSubItemsDataTemplate}" />
+
+    <ControlTemplate x:Key="AnnotationToolbarTemplate" TargetType="{x:Type toolbar:AnnotationToolbar}">
+        <Grid>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="42" />
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="20" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="32" />
+                    <RowDefinition Height="32" />
+                    <RowDefinition Height="32" />
+                    <RowDefinition Height="32" />
+                </Grid.RowDefinitions>
+                <toolbar:DraggableToolbarItem x:Name="DraggableZone" Grid.Row="0" Grid.Column="0"
+                    BorderBrush="{StaticResource Toolbar.DraggableItem.BorderBrush}"
+                    Background="{StaticResource Toolbar.DraggableItem.BackgroundBrush}" />
+                <ListBox x:Name="ToolsListBox" Grid.Row="1" Grid.Column="0"
+                    BorderThickness="0"
+                    VerticalAlignment="Center"
+                    FocusVisualStyle="{StaticResource BjnFocusVisualStyleDark}"
+                    Background="{StaticResource Toolbar.BackgroundBrush}">
+                    <ListBox.Template>
+                        <ControlTemplate>
+                            <ItemsPresenter />
+                        </ControlTemplate>
+                    </ListBox.Template>
+                    <ListBox.ItemContainerStyle>
+                        <Style TargetType="ListBoxItem">
+                            <Style.Setters>
+                                <Setter Property="FocusVisualStyle" Value="{StaticResource BjnFocusVisualStyleDark}" />
+                                <Setter Property="Height" Value="42" />
+                                <Setter Property="Width" Value="42" />
+                                <Setter Property="Padding" Value="0" />
+                                <Setter Property="Margin" Value="0" />
+                                <Setter Property="BorderThickness" Value="1 1 1 1" />
+                                <Setter Property="BorderBrush" Value="{StaticResource Toolbar.Item.BorderBrush}" />
+                                <Setter Property="Background" Value="{StaticResource Toolbar.BackgroundBrush}" />
+                                <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                                <Setter Property="VerticalContentAlignment" Value="Stretch" />
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate TargetType="ListBoxItem">
+                                            <Grid Background="{TemplateBinding Background}">
+                                                <VisualStateManager.VisualStateGroups>
+                                                    <VisualStateGroup x:Name="CommonStates">
+                                                        <VisualState x:Name="Normal" />
+                                                        <VisualState x:Name="MouseOver" />
+                                                    </VisualStateGroup>
+                                                    <VisualStateGroup x:Name="SelectionStates">
+                                                        <VisualState x:Name="Unselected" />
+                                                        <VisualState x:Name="Selected" />
+                                                    </VisualStateGroup>
+                                                    <VisualStateGroup x:Name="FocusStates">
+                                                        <VisualState x:Name="Focused" />
+                                                        <VisualState x:Name="Unfocused" />
+                                                    </VisualStateGroup>
+                                                </VisualStateManager.VisualStateGroups>
+                                                <Rectangle x:Name="fillColor"
+                                                    Fill="{StaticResource FillColor}" IsHitTestVisible="False" Opacity="0" RadiusX="1" RadiusY="1" />
+                                                <Rectangle x:Name="fillColor2"
+                                                    Fill="{StaticResource FillColor}" IsHitTestVisible="False" Opacity="0" RadiusX="1" RadiusY="1" />
+                                                <Border BorderThickness="{TemplateBinding BorderThickness}" BorderBrush="{TemplateBinding BorderBrush}">
+                                                    <ContentPresenter x:Name="contentPresenter"
+                                                        Margin="{TemplateBinding Padding}"
+                                                        HorizontalAlignment="Stretch"
+                                                        Content="{TemplateBinding Content}" ContentTemplate="{TemplateBinding ContentTemplate}" />
+                                                </Border>
+                                                <Rectangle x:Name="FocusVisualElement"
+                                                    RadiusX="1" RadiusY="1" Stroke="{StaticResource StrokeColor}" StrokeThickness="1"
+                                                    Visibility="Collapsed" />
+                                            </Grid>
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                            </Style.Setters>
+                        </Style>
+                    </ListBox.ItemContainerStyle>
+                    <ListBox.Items>
+                        <toolbar:ColorPickerToolbarItem />
+                        <toolbar:TextToolbarItem />
+                        <toolbar:PenToolbarItem />
+                        <toolbar:EraserToolbarItem />
+                    </ListBox.Items>
+                </ListBox>
+
+                <Border Grid.Row="2" BorderThickness="1 1 1 1" BorderBrush="{StaticResource Toolbar.Item.BorderBrush}">
+                    <Button x:Name="ClearBoardButton" FocusVisualStyle="{StaticResource BjnFocusVisualStyleDark}" Style="{StaticResource ClearBoardButtonStyle}" />
+                </Border>
+
+                <Border Grid.Row="3" BorderThickness="1 1 1 1" BorderBrush="{StaticResource Toolbar.Item.BorderBrush}">
+                    <Button x:Name="UndoToolbarButton" FocusVisualStyle="{StaticResource BjnFocusVisualStyleDark}" Style="{StaticResource UndoToolbarButtonStyle}" />
+                </Border>
+
+                <Border Grid.Row="4" BorderThickness="1 1 1 1" BorderBrush="{StaticResource Toolbar.Item.BorderBrush}">
+                    <Button x:Name="RedoToolbarButton" FocusVisualStyle="{StaticResource BjnFocusVisualStyleDark}" Style="{StaticResource RedoToolbarButtonStyle}" />
+                </Border>
+
+                <Border Grid.Row="5"
+                    BorderThickness="1" BorderBrush="{StaticResource Toolbar.Item.BorderBrush}" CornerRadius="0 0 2 2"
+                    Background="{StaticResource Toolbar.BackgroundBrush}">
+                    <Button x:Name="EndSession"
+                        Width="36" Height="26"
+                        FocusVisualStyle="{StaticResource BjnFocusVisualStyleDark}"
+                        Style="{StaticResource EndSessionButtonStyle}">
+                        <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Text="{TemplateBinding EndToolbarButtonText}" FontWeight="Bold" />
+                    </Button>
+                </Border>
+            </Grid>
+
+        </Grid>
+    </ControlTemplate>
+
+    <Style TargetType="{x:Type toolbarSubItems:SubitemsListBox}" BasedOn="{StaticResource {x:Type ListBox}}">
+        <Style.Setters>
+            <Setter Property="BorderThickness" Value="{StaticResource Picker.BorderThickness}" />
+            <Setter Property="ItemTemplateSelector" Value="{StaticResource SubItemsTemplateSelector}" />
+            <Setter Property="ItemsPanel">
+                <Setter.Value>
+                    <ItemsPanelTemplate>
+                        <StackPanel Orientation="Horizontal" />
+                    </ItemsPanelTemplate>
+                </Setter.Value>
+            </Setter>
+            <Setter Property="ItemContainerStyle">
+                <Setter.Value>
+                    <Style TargetType="ListBoxItem">
+                        <Style.Setters>
+                            <Setter Property="Height" Value="42" />
+                            <Setter Property="Width" Value="36" />
+                            <Setter Property="Padding" Value="0" />
+                            <Setter Property="Margin" Value="0" />
+                            <Setter Property="Background" Value="{StaticResource Toolbar.BackgroundBrush}" />
+                            <Setter Property="BorderThickness" Value="0" />
+                            <Setter Property="IsSelected" Value="{Binding IsSelected, Mode=TwoWay}" />
+                            <Setter Property="HorizontalContentAlignment" Value="Center" />
+                            <Setter Property="VerticalContentAlignment" Value="Center" />
+                        </Style.Setters>
+                    </Style>
+                </Setter.Value>
+            </Setter>
+        </Style.Setters>
+    </Style>
+
+    <Style TargetType="{x:Type toolbar:AnnotationToolbar}">
+        <Style.Setters>
+            <Setter Property="HorizontalAlignment" Value="Center" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+            <Setter Property="Template" Value="{StaticResource AnnotationToolbarTemplate}" />
+        </Style.Setters>
+    </Style>
+
+</ResourceDictionary>
