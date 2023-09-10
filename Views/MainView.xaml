@@ -1,14 +1,14 @@
 ﻿<Window
-    x:Class="ViewSonic.NoteApp.DrawingWindow"
+    x:Class="ViewSonic.NoteApp.Views.MainView"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:noteApp="clr-namespace:ViewSonic.NoteApp"
-    Title="Whiteboard session"
-    FontSize="18"
+    xmlns:noteApp="clr-namespace:ViewSonic.NoteApp" 
+    xmlns:views="clr-namespace:ViewSonic.NoteApp.Views"
     Icon="Themes/AppIcon.png"
     KeyDown="DrawingWindow_OnKeyDown"
+    WindowState="Maximized"
     mc:Ignorable="d">
     <Window.Resources>
         <ResourceDictionary>
@@ -39,14 +39,14 @@
                     VerticalAlignment="Center"
                     FontSize="32"
                     Foreground="{DynamicResource SharingIndicator.PrimaryTextBrush}"
-                    Text="{Binding RelativeSource={RelativeSource AncestorType={x:Type noteApp:DrawingWindow}}, Path=SharingIndicatorHeader}" />
+                    Text="{Binding RelativeSource={RelativeSource AncestorType={x:Type views:MainView}}, Path=SharingIndicatorHeader}" />
                 <TextBlock
                     Grid.Row="1"
                     HorizontalAlignment="Center"
                     VerticalAlignment="Center"
                     FontSize="25"
                     Foreground="{DynamicResource SharingIndicator.SecondaryTextBrush}"
-                    Text="{Binding RelativeSource={RelativeSource AncestorType={x:Type noteApp:DrawingWindow}}, Path=SharingIndicatorSubHeader}" />
+                    Text="{Binding RelativeSource={RelativeSource AncestorType={x:Type views:MainView}}, Path=SharingIndicatorSubHeader}" />
             </Grid>
             <Border.Style>
                 <Style TargetType="Border">

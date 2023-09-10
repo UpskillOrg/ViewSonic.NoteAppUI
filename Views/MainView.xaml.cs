@@ -8,15 +8,14 @@ using Brushes = System.Windows.Media.Brushes;
 using Color = System.Windows.Media.Color;
 using KeyEventArgs = System.Windows.Input.KeyEventArgs;
 
-
-namespace ViewSonic.NoteApp;
+namespace ViewSonic.NoteApp.Views;
 
 /// <summary>
 /// Interaction logic for DrawingWindow.xaml
 /// </summary>
-public partial class DrawingWindow : Window
+public partial class MainView
 {
-    private readonly int _toolbarMargin = 30;
+    private const int ToolbarMargin = 30;
 
     private float _xDisplacementRatio = 0;
     private float _yDisplacementRatio = 0;
@@ -29,9 +28,9 @@ public partial class DrawingWindow : Window
     private Window _fakeWnd;
 
     /// <summary>
-    /// Constructs <see cref="DrawingWindow"/>
+    /// Constructs <see cref="MainView"/>
     /// </summary>
-    public DrawingWindow()
+    public MainView()
     {
 
         InitFakeWindow();
@@ -88,11 +87,11 @@ public partial class DrawingWindow : Window
     /// Dependency property for PlaceholderText property
     /// </summary>
     public static readonly DependencyProperty PlaceholderTextProperty = DependencyProperty.Register(nameof(PlaceholderText),
-        typeof(string), typeof(DrawingWindow), new PropertyMetadata(DefaultCanvasTextItemPlaceholderText, PlaceholderTextChanged));
+        typeof(string), typeof(MainView), new PropertyMetadata(DefaultCanvasTextItemPlaceholderText, PlaceholderTextChanged));
 
     private static void PlaceholderTextChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
     {
-        if (d is not DrawingWindow drawingWindow)
+        if (d is not MainView drawingWindow)
         {
             return;
         }
@@ -113,12 +112,12 @@ public partial class DrawingWindow : Window
     /// DependencyProperty for SharingIndicatorHeader
     /// </summary>
     public static readonly DependencyProperty EndToolbarButtonTextProperty =
-        DependencyProperty.Register(nameof(EndToolbarButtonText), typeof(string), typeof(DrawingWindow),
+        DependencyProperty.Register(nameof(EndToolbarButtonText), typeof(string), typeof(MainView),
             new PropertyMetadata(DefaultEndToolbarButtonText, EndButtonTextChanged));
 
     private static void EndButtonTextChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
     {
-        if (d is not DrawingWindow wnd || wnd._toolbar == null)
+        if (d is not MainView wnd || wnd._toolbar == null)
         {
             return;
         }
@@ -139,7 +138,7 @@ public partial class DrawingWindow : Window
     /// DependencyProperty for SharingIndicatorHeader
     /// </summary>
     public static readonly DependencyProperty SharingIndicatorHeaderProperty =
-        DependencyProperty.Register(nameof(SharingIndicatorHeader), typeof(string), typeof(DrawingWindow),
+        DependencyProperty.Register(nameof(SharingIndicatorHeader), typeof(string), typeof(MainView),
             new PropertyMetadata(DefaultHeader));
 
     /// <summary>
@@ -155,7 +154,7 @@ public partial class DrawingWindow : Window
     /// DependencyProperty for SharingIndicatorSubHeader
     /// </summary>
     public static readonly DependencyProperty SharingIndicatorSubHeaderProperty =
-        DependencyProperty.Register(nameof(SharingIndicatorSubHeader), typeof(string), typeof(DrawingWindow),
+        DependencyProperty.Register(nameof(SharingIndicatorSubHeader), typeof(string), typeof(MainView),
             new PropertyMetadata(DefaultSubHeader));
 
     /// <summary>
@@ -221,7 +220,7 @@ public partial class DrawingWindow : Window
         AnnotationCanvas.BorderThickness = new Thickness(0);
 
         _toolbarWindow.Top = Top + ((ActualHeight - _toolbarWindow.ActualHeight) / 2);
-        _toolbarWindow.Left = Left + _toolbarMargin;
+        _toolbarWindow.Left = Left + ToolbarMargin;
         SetToolbarWindowDisplacementFactors();
     }
 
@@ -245,7 +244,7 @@ public partial class DrawingWindow : Window
     {
         if (_toolbarWindow.Left < Left)
         {
-            _toolbarWindow.Left = Left + _toolbarMargin;
+            _toolbarWindow.Left = Left + ToolbarMargin;
         }
 
         if (_toolbarWindow.Left + _toolbarWindow.ActualWidth > Left + Width)
