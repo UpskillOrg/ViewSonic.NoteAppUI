@@ -1,41 +1,25 @@
-﻿using System.ComponentModel;
-using System.Runtime.CompilerServices;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
+using System.ComponentModel;
 
 namespace ViewSonic.NoteApp.Toolbar.ToolbarSubItems
 {
     /// <summary>
     /// Represent base class for toolbar subitems
     /// </summary>
-    public abstract class ToolbarSubItem : IAnnotationToolbarSubItem, INotifyPropertyChanged
+    public abstract class ToolbarSubItem : ObservableObject, IAnnotationToolbarSubItem, INotifyPropertyChanged
     {
         private bool _isSelected;
 
-        /// <inheritdoc />
         public bool IsSelected
         {
             get { return _isSelected; }
             set
             {
                 _isSelected = value;
-                RaisePropertyChanged();
+                OnPropertyChanged(nameof(IsSelected));
             }
         }
 
-        /// <inheritdoc />
         public virtual AnnotationSubItemType ItemType { get; }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        /// <summary>
-        /// Raises property changed event for selected property
-        /// </summary>
-        /// <param name="propertyName"></param>
-        protected virtual void RaisePropertyChanged([CallerMemberName] string propertyName = null)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
     }
 }

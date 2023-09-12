@@ -1,15 +1,18 @@
-﻿using ViewSonic.NoteApp.Toolbar.ViewModels;
+﻿using System.Windows;
+using ViewSonic.NoteApp.Toolbar.ViewModels;
 
 namespace ViewSonic.NoteApp.Toolbar.Views
 {
     public class UndoToolbarItem : System.Windows.Controls.Control
     {
-        public UndoToolbarItem()
+        static UndoToolbarItem()
         {
-            // Set the ViewModel as the DataContext
-            DataContext = new UndoToolbarItemViewModel();
+            DefaultStyleKeyProperty.OverrideMetadata(typeof(UndoToolbarItem), new FrameworkPropertyMetadata(typeof(UndoToolbarItem)));
+        }
 
-            // Other initialization code
+        public UndoToolbarItem()
+        {        
+            DataContext = new UndoToolbarItemViewModel();
         }
     }
 }

@@ -5,7 +5,11 @@
         public EraserToolbarItemViewModel()
         {
             ItemType = AnnotationItemType.Eraser;
-            IsTogglable = true;
+        }
+        
+        public override bool IsTogglable
+        {
+            get { return true; }
         }
     }
 }

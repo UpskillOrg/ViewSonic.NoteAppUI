@@ -1,18 +1,19 @@
-﻿using ViewSonic.NoteApp.Toolbar.ViewModels;
+﻿using System.Windows;
+using ViewSonic.NoteApp.Toolbar.ViewModels;
 
 namespace ViewSonic.NoteApp.Toolbar.Views
 {
     public class TextToolbarItem : System.Windows.Controls.Control
     {
-        public TextToolbarItem()
+        static TextToolbarItem()
         {
-            // Set the ViewModel as the DataContext
-            DataContext = new TextToolbarItemViewModel();
-
-            // Other initialization code
+            DefaultStyleKeyProperty.OverrideMetadata(typeof(TextToolbarItem), new FrameworkPropertyMetadata(typeof(TextToolbarItem)));
         }
 
-        // Other methods and properties
+        public TextToolbarItem()
+        {        
+            DataContext = new TextToolbarItemViewModel();         
+        }
     }
 
 }

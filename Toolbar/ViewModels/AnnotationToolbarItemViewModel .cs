@@ -14,7 +14,13 @@ namespace ViewSonic.NoteApp.Toolbar.ViewModels
             SubItems = new ObservableCollection<IAnnotationToolbarSubItem>();
         }
 
-        public bool IsTogglable { get; set; }
+        /// <summary>
+        /// Gets a value indicating is current item could be toggled
+        /// </summary>
+        public virtual bool IsTogglable
+        {
+            get { return false; }
+        }
 
         public AnnotationItemType ItemType { get; set; }
 
@@ -25,8 +31,8 @@ namespace ViewSonic.NoteApp.Toolbar.ViewModels
             {
                 if (_isToggled != value)
                 {
-                    _isToggled = value;
-                    OnPropertyChanged();
+                    _isToggled = value;                    
+                    OnPropertyChanged(nameof(IsToggled));
                 }
             }
         }
@@ -39,7 +45,7 @@ namespace ViewSonic.NoteApp.Toolbar.ViewModels
                 if (_isSelected != value)
                 {
                     _isSelected = value;
-                    OnPropertyChanged();
+                    OnPropertyChanged(nameof(IsSelected));
                 }
             }
         }

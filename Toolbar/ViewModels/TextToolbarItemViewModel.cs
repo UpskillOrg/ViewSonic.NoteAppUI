@@ -57,8 +57,12 @@ namespace ViewSonic.NoteApp.Toolbar.ViewModels
 
         private void Toggle()
         {
-            // Implement the Toggle logic here
             IsToggled = !IsToggled;
-        }        
+        }
+
+        public override bool IsTogglable
+        {
+            get { return true; }
+        }
     }
 }

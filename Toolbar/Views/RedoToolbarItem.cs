@@ -5,11 +5,14 @@ namespace ViewSonic.NoteApp.Toolbar.Views
 {
     public class RedoToolbarItem : System.Windows.Controls.Control
     {
-        public RedoToolbarItem()
+        static RedoToolbarItem()
         {
-            // Set the ViewModel as the DataContext
-            DataContext = new RedoToolbarItemViewModel();
+            DefaultStyleKeyProperty.OverrideMetadata(typeof(RedoToolbarItem), new FrameworkPropertyMetadata(typeof(RedoToolbarItem)));
+        }
 
+        public RedoToolbarItem()
+        {        
+            DataContext = new RedoToolbarItemViewModel();
         }
     }
 }

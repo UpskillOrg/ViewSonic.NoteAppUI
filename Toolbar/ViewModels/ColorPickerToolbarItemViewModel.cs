@@ -10,6 +10,7 @@ public class ColorPickerToolbarItemViewModel : AnnotationToolbarItemViewModel
 
     public ColorPickerToolbarItemViewModel()
     {
+        ItemType = AnnotationItemType.ColorPicker;
         SubItems  = new ObservableCollection<IAnnotationToolbarSubItem>
         {
             new ColorPickerToolbarSubItem { Brush = (SolidColorBrush)new BrushConverter().ConvertFrom("#FFFFFF") },
@@ -22,9 +23,9 @@ public class ColorPickerToolbarItemViewModel : AnnotationToolbarItemViewModel
             new ColorPickerToolbarSubItem { Brush = (SolidColorBrush)new BrushConverter().ConvertFrom("#4D6780") },
             new ColorPickerToolbarSubItem { Brush = (SolidColorBrush)new BrushConverter().ConvertFrom("#292929") }
         };
-        SelectedSubItem = SubItems[2]; 
+        SelectedSubItem = SubItems[2];
+        SelectedSubItem.IsSelected = true;
     }
-
 
     public IAnnotationToolbarSubItem SelectedSubItem
     {
