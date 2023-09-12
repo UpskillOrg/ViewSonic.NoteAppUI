@@ -1,7 +1,7 @@
 ﻿using System.Windows;
 using System.Windows.Controls.Primitives;
 
-namespace ViewSonic.NoteApp.Toolbar
+namespace ViewSonic.NoteApp.Toolbar.Views
 {
     /// <summary>
     /// Toolbar item created for dragging <see cref="AnnotationToolbar"/>

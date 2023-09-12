@@ -3,7 +3,7 @@ using System.Windows;
 using System.Windows.Forms;
 using System.Windows.Input;
 using System.Windows.Media;
-using ViewSonic.NoteApp.Toolbar;
+using ViewSonic.NoteApp.Toolbar.Views;
 using Brushes = System.Windows.Media.Brushes;
 using Color = System.Windows.Media.Color;
 using KeyEventArgs = System.Windows.Input.KeyEventArgs;

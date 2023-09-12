@@ -10,6 +10,7 @@ using System.Windows.Media;
 using System.Windows.Shell;
 using ViewSonic.NoteApp.Toolbar.Events;
 using ViewSonic.NoteApp.Toolbar.ToolbarSubItems;
+using ViewSonic.NoteApp.Toolbar.ViewModels;
 using Binding = System.Windows.Data.Binding;
 using Brushes = System.Windows.Media.Brushes;
 using Button = System.Windows.Controls.Button;
@@ -18,7 +19,7 @@ using KeyEventArgs = System.Windows.Input.KeyEventArgs;
 using ListBox = System.Windows.Controls.ListBox;
 using Size = System.Windows.Size;
 
-namespace ViewSonic.NoteApp.Toolbar
+namespace ViewSonic.NoteApp.Toolbar.Views
 {
     /// <summary>
     /// Represents a toolbar control
@@ -32,7 +33,7 @@ namespace ViewSonic.NoteApp.Toolbar
         private Button _clearBoardButton;
         private Button _undoToolbarButton;
         private Button _redoToolbarButton;
-        private AnnotationToolbarItem _selectedItem;
+        private AnnotationToolbarItemViewModel _selectedItem;
         private CanvasMode _lastCanvasMode;
 
         private Window _subItemsPopup;
@@ -201,14 +202,14 @@ namespace ViewSonic.NoteApp.Toolbar
         /// <summary>
         /// Dependency property for <see cref="SubItems"/>
         /// </summary>
-        public static readonly DependencyProperty SubItemsProperty = DependencyProperty.Register(nameof(SubItems), typeof(ObservableCollection<object>), typeof(AnnotationToolbar));
+        public static readonly DependencyProperty SubItemsProperty = DependencyProperty.Register(nameof(SubItems), typeof(ObservableCollection<IAnnotationToolbarSubItem>), typeof(AnnotationToolbar));
 
         /// <summary>
         /// Gets or sets a SubItems collection
         /// </summary>
-        public ObservableCollection<object> SubItems
+        public ObservableCollection<IAnnotationToolbarSubItem> SubItems
         {
-            get => (ObservableCollection<object>)GetValue(SubItemsProperty);
+            get => (ObservableCollection<IAnnotationToolbarSubItem>)GetValue(SubItemsProperty);
             set => SetValue(SubItemsProperty, value);
         }
 
@@ -408,46 +409,46 @@ namespace ViewSonic.NoteApp.Toolbar
                 return;
             }
 
-            if (e.AddedItems[0] is not AnnotationToolbarItem item)
+            if (e.AddedItems[0] is not Control item)
             {
                 return;
             }
 
             SubItems = null;
-            _selectedItem = item;
-            item.IsSelected = !item.IsSelected;
+            _selectedItem = (AnnotationToolbarItemViewModel)item.DataContext;
+            _selectedItem.IsSelected = !_selectedItem.IsSelected;
 
             DeselectAllExceptCurrent();
 
-            if ((item.IsSelected && !item.IsTogglable) || (item.IsTogglable && item.IsToggled))
+            if (_selectedItem.IsSelected && !_selectedItem.IsTogglable || _selectedItem.IsTogglable && _selectedItem.IsToggled)
             {
-                SubItems = item.SubItems;
+                SubItems = _selectedItem.SubItems;
             }
 
-            if (item.IsTogglable && item.IsToggled)
+            if (_selectedItem.IsTogglable && _selectedItem.IsToggled)
             {
-                switch (item.ItemType)
+                switch (_selectedItem.ItemType)
                 {
                     case AnnotationItemType.Text:
                     case AnnotationItemType.Pen:
-                        PlaceSubItemsPopup(item.ItemType);
+                        PlaceSubItemsPopup(_selectedItem.ItemType);
                         break;
                 }
             }
 
-            if (item.IsTogglable && !item.IsToggled)
+            if (_selectedItem.IsTogglable && !_selectedItem.IsToggled)
             {
-                SetIsToggled(item.ItemType);
+                SetIsToggled(_selectedItem.ItemType);
             }
 
-            if (item.ItemType is AnnotationItemType.Eraser or
+            if (_selectedItem.ItemType is AnnotationItemType.Eraser or
                 AnnotationItemType.Pen or
                 AnnotationItemType.Text)
             {
-                var mode = GetCanvasModeFromItemType(item.ItemType);
+                var mode = GetCanvasModeFromItemType(_selectedItem.ItemType);
                 if (mode == _lastCanvasMode)
                 {
-                    if (item.ItemType == _lastOpenedItemType)
+                    if (_selectedItem.ItemType == _lastOpenedItemType)
                     {
                         _isPopupOpen = !_isPopupOpen;
                         if (!_isPopupOpen)
@@ -460,7 +461,7 @@ namespace ViewSonic.NoteApp.Toolbar
                         _isPopupOpen = SubItems != null;
                     }
 
-                    _lastOpenedItemType = item.ItemType;
+                    _lastOpenedItemType = _selectedItem.ItemType;
                     _toolsListBox.SelectedItem = null;
                     return;
                 }
@@ -472,9 +473,9 @@ namespace ViewSonic.NoteApp.Toolbar
                 };
                 RaiseEvent(modeChangedArgs);
             }
-            else if (!item.IsTogglable)
+            else if (!_selectedItem.IsTogglable)
             {
-                switch (item.ItemType)
+                switch (_selectedItem.ItemType)
                 {
                     case AnnotationItemType.ColorPicker:
                         PlaceSubItemsPopup(AnnotationItemType.ColorPicker);
@@ -484,7 +485,7 @@ namespace ViewSonic.NoteApp.Toolbar
                 }
             }
 
-            if (item.ItemType == _lastOpenedItemType)
+            if (_selectedItem.ItemType == _lastOpenedItemType)
             {
                 _isPopupOpen = !_isPopupOpen;
                 if (!_isPopupOpen)
@@ -497,18 +498,19 @@ namespace ViewSonic.NoteApp.Toolbar
                 _isPopupOpen = SubItems != null;
             }
 
-            _lastOpenedItemType = item.ItemType;
+            _lastOpenedItemType = _selectedItem.ItemType;
             _toolsListBox.SelectedItem = null;
         }
 
         private void PlaceSubItemsPopup(AnnotationItemType itemType)
         {
             var i = 0;
-            foreach (AnnotationToolbarItem item in _toolsListBox.Items)
+            foreach (Control item in _toolsListBox.Items)
             {
-                if (item.ItemType == itemType)
+                var itemViewModel = (AnnotationToolbarItemViewModel)item.DataContext;
+                if (itemViewModel.ItemType == itemType)
                 {
-                    _subItemsPopup.Top = _currentTop + TopMargin + (i * item.ActualHeight);
+                    _subItemsPopup.Top = _currentTop + TopMargin + i * item.ActualHeight;
                     if (IsSubItemsOnLeftSide)
                     {
                         _subItemsListBox.Measure(new Size(double.PositiveInfinity, double.PositiveInfinity));
@@ -521,7 +523,7 @@ namespace ViewSonic.NoteApp.Toolbar
 
                     if (IsSubItemsOnLeftSide && SubItems != null)
                     {
-                        SubItems = new ObservableCollection<object>(SubItems.Reverse());
+                        SubItems = new ObservableCollection<IAnnotationToolbarSubItem>(SubItems.Reverse());
                     }
 
                     break;
@@ -550,28 +552,30 @@ namespace ViewSonic.NoteApp.Toolbar
 
         private void SetIsToggled(AnnotationItemType itemType)
         {
-            foreach (AnnotationToolbarItem toolbarItem in _toolsListBox.Items)
+            foreach (Control toolbarItem in _toolsListBox.Items)
             {
-                if (toolbarItem.ItemType == itemType)
+                var itemViewModel = (AnnotationToolbarItemViewModel)toolbarItem.DataContext;
+                if (itemViewModel.ItemType == itemType)
                 {
-                    toolbarItem.IsToggled = true;
+                    itemViewModel.IsToggled = true;
                     continue;
                 }
 
-                toolbarItem.IsToggled = false;
+                itemViewModel.IsToggled = false;
             }
         }
 
         private void DeselectAllExceptCurrent()
         {
-            foreach (AnnotationToolbarItem toolbarItem in _toolsListBox.Items)
+            foreach (Control toolbarItem in _toolsListBox.Items)
             {
-                if (toolbarItem == _selectedItem)
+                var itemViewModel = (AnnotationToolbarItemViewModel)toolbarItem.DataContext;
+                if (itemViewModel == _selectedItem)
                 {
                     continue;
                 }
 
-                toolbarItem.IsSelected = false;
+                itemViewModel.IsSelected = false;
             }
         }
 
@@ -588,7 +592,7 @@ namespace ViewSonic.NoteApp.Toolbar
                 {
                     case AnnotationSubItemType.ColorPicker:
                         var colorPicker = (ColorPickerToolbarSubItem)selectedItem;
-                        ((ColorPickerToolbarItem)_selectedItem).BrushSubItem = colorPicker;
+                        ((ColorPickerToolbarItemViewModel)_selectedItem).SelectedSubItem = colorPicker;
                         var args = new ColorChangedEventArgs(((SolidColorBrush)colorPicker.Brush).Color)
                         {
                             RoutedEvent = ColorChangedEvent
@@ -598,7 +602,7 @@ namespace ViewSonic.NoteApp.Toolbar
 
                     case AnnotationSubItemType.Text:
                         var textSubItem = (TextToolbarSubItem)selectedItem;
-                        ((TextToolbarItem)_selectedItem).TextSubItem = textSubItem;
+                        ((TextToolbarItemViewModel)_selectedItem).SelectedSubItem = textSubItem;
                         var fontSizeArgs = new FontSizeChangedEventArgs(textSubItem.FontSize)
                         {
                             RoutedEvent = FontSizeChangedEvent
@@ -607,13 +611,14 @@ namespace ViewSonic.NoteApp.Toolbar
                         break;
                     case AnnotationSubItemType.Pen:
                         var penSubItem = (PenToolbarSubItem)selectedItem;
-                        ((PenToolbarItem)_selectedItem).PenSubItem = penSubItem;
+                        ((PenToolbarItemViewModel)_selectedItem).SelectedPenSubItem = penSubItem;
                         var penChangedArgs =
                             new PenChangedEventArgs(
                                 penSubItem.PenWidth,
                                 penSubItem.PenHeight,
                                 penSubItem.IsHighlighter
-                            ) {
+                            )
+                            {
                                 RoutedEvent = PenChangedEvent
                             };
                         RaiseEvent(penChangedArgs);
@@ -692,17 +697,19 @@ namespace ViewSonic.NoteApp.Toolbar
                 CanvasMode = _lastCanvasMode
             };
 
-            foreach (AnnotationToolbarItem toolbarItem in _toolsListBox.Items)
+            foreach (Control toolbarItem in _toolsListBox.Items)
             {
-                switch (toolbarItem.ItemType)
+                var toolBarItemViewModel = toolbarItem.DataContext as AnnotationToolbarItemViewModel;
+                switch (toolBarItemViewModel.ItemType)
                 {
                     case AnnotationItemType.Pen:
                         {
                             if (toolbarItem is PenToolbarItem pen)
                             {
-                                settings.PenWidth = pen.PenSubItem.PenWidth;
-                                settings.PenHeight = pen.PenSubItem.PenHeight;
-                                settings.IsHighlighter = pen.PenSubItem.IsHighlighter;
+                                var penToolbarItemViewModel = toolbarItem.DataContext as PenToolbarItemViewModel;
+                                settings.PenWidth = penToolbarItemViewModel.SelectedPenSubItem.PenWidth;
+                                settings.PenHeight = penToolbarItemViewModel.SelectedPenSubItem.PenHeight;
+                                settings.IsHighlighter = penToolbarItemViewModel.SelectedPenSubItem.IsHighlighter;
                             }
 
                             break;
@@ -711,7 +718,7 @@ namespace ViewSonic.NoteApp.Toolbar
                         {
                             if (toolbarItem is ColorPickerToolbarItem colorPicker)
                             {
-                                settings.Color = ((SolidColorBrush)colorPicker.BrushSubItem.Brush).Color;
+                                settings.Color = (((ColorPickerToolbarSubItem)(colorPicker.DataContext as ColorPickerToolbarItemViewModel).SelectedSubItem).Brush as SolidColorBrush).Color;
                             }
 
                             break;
@@ -720,7 +727,7 @@ namespace ViewSonic.NoteApp.Toolbar
                         {
                             if (toolbarItem is TextToolbarItem fontSize)
                             {
-                                settings.FontSize = fontSize.TextSubItem.FontSize;
+                                settings.FontSize = (fontSize.DataContext as TextToolbarItemViewModel).SelectedSubItem.FontSize;
                             }
 
                             break;

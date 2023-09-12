@@ -1,4 +1,6 @@
-﻿namespace ViewSonic.NoteApp.Toolbar.ToolbarSubItems
+﻿using ViewSonic.NoteApp.Toolbar.Views;
+
+namespace ViewSonic.NoteApp.Toolbar.ToolbarSubItems
 {
     /// <summary>
     /// Represents Pen toolbar subitem for <see cref="PenToolbarItem"/>

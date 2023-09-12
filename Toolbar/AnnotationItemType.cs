@@ -1,4 +1,6 @@
-﻿namespace ViewSonic.NoteApp.Toolbar
+﻿using ViewSonic.NoteApp.Toolbar.Views;
+
+namespace ViewSonic.NoteApp.Toolbar
 {
     /// <summary>
     /// Annotation toolbar item types

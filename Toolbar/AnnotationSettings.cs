@@ -1,4 +1,5 @@
-﻿using Color = System.Windows.Media.Color;
+﻿using ViewSonic.NoteApp.Toolbar.Views;
+using Color = System.Windows.Media.Color;
 
 namespace ViewSonic.NoteApp.Toolbar
 {

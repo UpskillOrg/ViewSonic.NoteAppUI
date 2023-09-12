@@ -1,7 +1,7 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="clr-namespace:ViewSonic.NoteApp"
-    xmlns:toolbar="clr-namespace:ViewSonic.NoteApp.Toolbar"
+    xmlns:toolbar="clr-namespace:ViewSonic.NoteApp.Toolbar.Views"
     xmlns:toolbarSubItems="clr-namespace:ViewSonic.NoteApp.Toolbar.ToolbarSubItems">
     <ResourceDictionary.MergedDictionaries>
         <ResourceDictionary Source="/ViewSonic.NoteApp;component/Themes/Cursors.xaml" />
@@ -208,18 +208,18 @@
             </Setter.Value>
         </Setter>
         <Style.Triggers>
-            <Trigger Property="IsSelected" Value="True">
+            <DataTrigger Binding="{Binding IsSelected}" Value="True">
                 <Setter Property="Background" Value="{StaticResource Toolbar.SelectedItem.BackgroundBrush}" />
                 <Setter Property="Foreground" Value="{StaticResource Toolbar.SelectedItem.ForegroundBrush}" />
-            </Trigger>
-            <Trigger Property="IsSelected" Value="False">
+            </DataTrigger>
+            <DataTrigger Binding="{Binding IsSelected}" Value="False">
                 <Setter Property="Background" Value="{StaticResource Toolbar.BackgroundBrush}" />
                 <Setter Property="Foreground" Value="{StaticResource Toolbar.ForegroundBrush}" />
-            </Trigger>
-            <Trigger Property="IsMouseOver" Value="True">
+            </DataTrigger>
+            <DataTrigger Binding="{Binding IsMouseOver}" Value="True">
                 <Setter Property="Background" Value="{StaticResource Toolbar.SelectedItem.BackgroundBrush}" />
                 <Setter Property="Foreground" Value="{StaticResource Toolbar.SelectedItem.ForegroundBrush}" />
-            </Trigger>
+            </DataTrigger>
         </Style.Triggers>
     </Style>
 
@@ -246,18 +246,18 @@
             </Setter.Value>
         </Setter>
         <Style.Triggers>
-            <Trigger Property="IsToggled" Value="True">
+            <DataTrigger Binding="{Binding DataContext.IsToggled}" Value="True">
                 <Setter Property="Background" Value="{StaticResource Toolbar.SelectedItem.BackgroundBrush}" />
                 <Setter Property="Foreground" Value="{StaticResource Toolbar.SelectedItem.ForegroundBrush}" />
-            </Trigger>
-            <Trigger Property="IsToggled" Value="False">
+            </DataTrigger>
+            <DataTrigger Binding="{Binding DataContext.IsToggled}" Value="False">
                 <Setter Property="Background" Value="{StaticResource Toolbar.BackgroundBrush}" />
                 <Setter Property="Foreground" Value="{StaticResource Toolbar.ForegroundBrush}" />
-            </Trigger>
-            <Trigger Property="IsMouseOver" Value="True">
+            </DataTrigger>
+            <DataTrigger Binding="{Binding DataContext.IsMouseOver}" Value="True">
                 <Setter Property="Background" Value="{StaticResource Toolbar.SelectedItem.BackgroundBrush}" />
                 <Setter Property="Foreground" Value="{StaticResource Toolbar.SelectedItem.ForegroundBrush}" />
-            </Trigger>
+            </DataTrigger>
         </Style.Triggers>
     </Style>
 
@@ -311,18 +311,18 @@
             </Setter.Value>
         </Setter>
         <Style.Triggers>
-            <Trigger Property="IsToggled" Value="True">
+            <DataTrigger Binding="{Binding DataContext.IsToggled}" Value="True">
                 <Setter Property="Background" Value="{StaticResource Toolbar.SelectedItem.BackgroundBrush}" />
                 <Setter Property="Foreground" Value="{StaticResource Toolbar.SelectedItem.ForegroundBrush}" />
-            </Trigger>
-            <Trigger Property="IsToggled" Value="False">
+            </DataTrigger>
+            <DataTrigger Binding="{Binding DataContext.IsToggled}" Value="False">
                 <Setter Property="Background" Value="{StaticResource Toolbar.BackgroundBrush}" />
                 <Setter Property="Foreground" Value="{StaticResource Toolbar.ForegroundBrush}" />
-            </Trigger>
-            <Trigger Property="IsMouseOver" Value="True">
+            </DataTrigger>
+            <DataTrigger Binding="{Binding DataContext.IsMouseOver}" Value="True">
                 <Setter Property="Background" Value="{StaticResource Toolbar.SelectedItem.BackgroundBrush}" />
                 <Setter Property="Foreground" Value="{StaticResource Toolbar.SelectedItem.ForegroundBrush}" />
-            </Trigger>
+            </DataTrigger>
         </Style.Triggers>
     </Style>
 
@@ -353,18 +353,18 @@
             </Setter.Value>
         </Setter>
         <Style.Triggers>
-            <Trigger Property="IsToggled" Value="True">
+            <DataTrigger Binding="{Binding DataContext.IsToggled}" Value="True">
                 <Setter Property="Background" Value="{StaticResource Toolbar.SelectedItem.BackgroundBrush}" />
                 <Setter Property="Foreground" Value="{StaticResource Toolbar.SelectedItem.ForegroundBrush}" />
-            </Trigger>
-            <Trigger Property="IsToggled" Value="False">
+            </DataTrigger>
+            <DataTrigger Binding="{Binding DataContext.IsToggled}" Value="False">
                 <Setter Property="Background" Value="{StaticResource Toolbar.BackgroundBrush}" />
                 <Setter Property="Foreground" Value="{StaticResource Toolbar.ForegroundBrush}" />
-            </Trigger>
-            <Trigger Property="IsMouseOver" Value="True">
+            </DataTrigger>
+            <DataTrigger Binding="{Binding DataContext.IsMouseOver}" Value="True">
                 <Setter Property="Background" Value="{StaticResource Toolbar.SelectedItem.BackgroundBrush}" />
                 <Setter Property="Foreground" Value="{StaticResource Toolbar.SelectedItem.ForegroundBrush}" />
-            </Trigger>
+            </DataTrigger>
         </Style.Triggers>
     </Style>
 
@@ -398,18 +398,18 @@
                         </Grid>
                     </Grid>
                     <ControlTemplate.Triggers>
-                        <Trigger Property="IsPressed" Value="True">
+                        <DataTrigger Binding="{Binding DataContext.IsPressed}" Value="True">
                             <Setter Property="Background" Value="{StaticResource Toolbar.SelectedItem.BackgroundBrush}" />
                             <Setter Property="Foreground" Value="{StaticResource Toolbar.SelectedItem.ForegroundBrush}" />
-                        </Trigger>
-                        <Trigger Property="IsPressed" Value="False">
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding DataContext.IsPresssed}" Value="False">
                             <Setter Property="Background" Value="{StaticResource Toolbar.BackgroundBrush}" />
                             <Setter Property="Foreground" Value="{StaticResource Toolbar.ForegroundBrush}" />
-                        </Trigger>
-                        <Trigger Property="IsMouseOver" Value="True">
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding DataContext.IsMouseOver}" Value="True">
                             <Setter Property="Background" Value="{StaticResource Toolbar.SelectedItem.BackgroundBrush}" />
                             <Setter Property="Foreground" Value="{StaticResource Toolbar.SelectedItem.ForegroundBrush}" />
-                        </Trigger>
+                        </DataTrigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
             </Setter.Value>
@@ -433,18 +433,18 @@
                             TextElement.Foreground="{TemplateBinding Foreground}" />
                     </Grid>
                     <ControlTemplate.Triggers>
-                        <Trigger Property="IsPressed" Value="True">
-                            <Setter Property="Background" Value="{StaticResource Toolbar.EndSessionItem.PressedBackgroundBrush}" />
-                            <Setter Property="Foreground" Value="{StaticResource Toolbar.EndSessionItem.PressedForegroundBrush}" />
-                        </Trigger>
-                        <Trigger Property="IsPressed" Value="False">
-                            <Setter Property="Background" Value="{StaticResource Toolbar.EndSessionItem.BackgroundBrush}" />
-                            <Setter Property="Foreground" Value="{StaticResource Toolbar.EndSessionItem.ForegroundBrush}" />
-                        </Trigger>
-                        <Trigger Property="IsMouseOver" Value="True">
-                            <Setter Property="Background" Value="{StaticResource Toolbar.EndSessionItem.HoverBackgroundBrush}" />
-                            <Setter Property="Foreground" Value="{StaticResource Toolbar.EndSessionItem.HoverForegroundBrush}" />
-                        </Trigger>
+                        <DataTrigger Binding="{Binding DataContext.IsPressed}" Value="True">
+                            <Setter Property="Background" Value="{StaticResource Toolbar.SelectedItem.BackgroundBrush}" />
+                            <Setter Property="Foreground" Value="{StaticResource Toolbar.SelectedItem.ForegroundBrush}" />
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding DataContext.IsPresssed}" Value="False">
+                            <Setter Property="Background" Value="{StaticResource Toolbar.BackgroundBrush}" />
+                            <Setter Property="Foreground" Value="{StaticResource Toolbar.ForegroundBrush}" />
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding DataContext.IsMouseOver}" Value="True">
+                            <Setter Property="Background" Value="{StaticResource Toolbar.SelectedItem.BackgroundBrush}" />
+                            <Setter Property="Foreground" Value="{StaticResource Toolbar.SelectedItem.ForegroundBrush}" />
+                        </DataTrigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
             </Setter.Value>
@@ -477,7 +477,7 @@
                         <MultiTrigger>
                             <MultiTrigger.Conditions>
                                 <Condition Property="IsEnabled" Value="True" />
-                                <Condition Property="IsPressed" Value="True" />
+                                <Condition Property="IsPressed" Value="False" />
                             </MultiTrigger.Conditions>
                             <Setter Property="Background" Value="{StaticResource Toolbar.SelectedItem.BackgroundBrush}" />
                             <Setter Property="Foreground" Value="{StaticResource Toolbar.SelectedItem.ForegroundBrush}" />
@@ -485,7 +485,7 @@
                         <MultiTrigger>
                             <MultiTrigger.Conditions>
                                 <Condition Property="IsEnabled" Value="True" />
-                                <Condition Property="IsPressed" Value="False" />
+                                <Condition Property="IsPressed" Value="True" />
                             </MultiTrigger.Conditions>
                             <Setter Property="Background" Value="{StaticResource Toolbar.BackgroundBrush}" />
                             <Setter Property="Foreground" Value="{StaticResource Toolbar.ForegroundBrush}" />
@@ -497,7 +497,7 @@
                         <MultiTrigger>
                             <MultiTrigger.Conditions>
                                 <Condition Property="IsEnabled" Value="True" />
-                                <Condition Property="IsPressed" Value="False" />
+                                <Condition Property="IsPressed" Value="True" />
                                 <Condition Property="IsMouseOver" Value="True" />
                             </MultiTrigger.Conditions>
                             <Setter Property="Background" Value="{StaticResource Toolbar.SelectedItem.BackgroundBrush}" />
@@ -546,7 +546,7 @@
                         <MultiTrigger>
                             <MultiTrigger.Conditions>
                                 <Condition Property="IsEnabled" Value="True" />
-                                <Condition Property="IsPressed" Value="False" />
+                                <Condition Property="IsPressed" Value="True" />
                             </MultiTrigger.Conditions>
                             <Setter Property="Background" Value="{StaticResource Toolbar.BackgroundBrush}" />
                             <Setter Property="Foreground" Value="{StaticResource Toolbar.ForegroundBrush}" />
@@ -558,7 +558,7 @@
                         <MultiTrigger>
                             <MultiTrigger.Conditions>
                                 <Condition Property="IsEnabled" Value="True" />
-                                <Condition Property="IsPressed" Value="False" />
+                                <Condition Property="IsPressed" Value="True" />
                                 <Condition Property="IsMouseOver" Value="True" />
                             </MultiTrigger.Conditions>
                             <Setter Property="Background" Value="{StaticResource Toolbar.SelectedItem.BackgroundBrush}" />

@@ -5,6 +5,7 @@ using System.Windows.Ink;
 using System.Windows.Input;
 using System.Windows.Media;
 using ViewSonic.NoteApp.Toolbar;
+using ViewSonic.NoteApp.Toolbar.Views;
 using ViewSonic.NoteApp.UndoRedo;
 using Brushes = System.Windows.Media.Brushes;
 using Cursor = System.Windows.Input.Cursor;
