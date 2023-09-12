@@ -11,11 +11,8 @@ namespace ViewSonic.NoteApp.Toolbar.ViewModels
         public UndoToolbarItemViewModel()
         {
             ItemType = AnnotationItemType.Undo;
-            IsEnabled = true;
-            UndoCommand = new RelayCommand(Undo);
+            IsEnabled = true;         
         }
-
-        public ICommand UndoCommand { get; }
 
         public bool IsEnabled
         {
@@ -28,12 +25,6 @@ namespace ViewSonic.NoteApp.Toolbar.ViewModels
                     OnPropertyChanged();
                 }
             }
-        }
-
-        private void Undo()
-        {
-            // Implement the undo logic here
-            // For example, you can raise an event or execute a command to perform the undo action
         }
     }
 }

@@ -409,7 +409,7 @@ namespace ViewSonic.NoteApp.Toolbar.Views
                 return;
             }
 
-            if (e.AddedItems[0] is not Control item)
+            if (e.AddedItems[0] is not AnnotationToolbarItem item)
             {
                 return;
             }
@@ -505,7 +505,7 @@ namespace ViewSonic.NoteApp.Toolbar.Views
         private void PlaceSubItemsPopup(AnnotationItemType itemType)
         {
             var i = 0;
-            foreach (Control item in _toolsListBox.Items)
+            foreach (AnnotationToolbarItem item in _toolsListBox.Items)
             {
                 var itemViewModel = (AnnotationToolbarItemViewModel)item.DataContext;
                 if (itemViewModel.ItemType == itemType)
@@ -552,7 +552,7 @@ namespace ViewSonic.NoteApp.Toolbar.Views
 
         private void SetIsToggled(AnnotationItemType itemType)
         {
-            foreach (Control toolbarItem in _toolsListBox.Items)
+            foreach (AnnotationToolbarItem toolbarItem in _toolsListBox.Items)
             {
                 var itemViewModel = (AnnotationToolbarItemViewModel)toolbarItem.DataContext;
                 if (itemViewModel.ItemType == itemType)
@@ -567,7 +567,7 @@ namespace ViewSonic.NoteApp.Toolbar.Views
 
         private void DeselectAllExceptCurrent()
         {
-            foreach (Control toolbarItem in _toolsListBox.Items)
+            foreach (AnnotationToolbarItem toolbarItem in _toolsListBox.Items)
             {
                 var itemViewModel = (AnnotationToolbarItemViewModel)toolbarItem.DataContext;
                 if (itemViewModel == _selectedItem)
@@ -697,7 +697,7 @@ namespace ViewSonic.NoteApp.Toolbar.Views
                 CanvasMode = _lastCanvasMode
             };
 
-            foreach (Control toolbarItem in _toolsListBox.Items)
+            foreach (AnnotationToolbarItem toolbarItem in _toolsListBox.Items)
             {
                 var toolBarItemViewModel = toolbarItem.DataContext as AnnotationToolbarItemViewModel;
                 switch (toolBarItemViewModel.ItemType)

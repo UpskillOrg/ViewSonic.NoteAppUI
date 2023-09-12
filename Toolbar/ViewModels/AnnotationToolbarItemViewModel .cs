@@ -4,7 +4,7 @@ using ViewSonic.NoteApp.Toolbar.ToolbarSubItems;
 
 namespace ViewSonic.NoteApp.Toolbar.ViewModels
 {
-    public class AnnotationToolbarItemViewModel : ObservableObject
+    public abstract class AnnotationToolbarItemViewModel : ObservableObject
     {
         private bool _isToggled;
         private bool _isSelected;

@@ -3,7 +3,7 @@ using ViewSonic.NoteApp.Toolbar.ViewModels;
 
 namespace ViewSonic.NoteApp.Toolbar.Views;
 
-public class ColorPickerToolbarItem : System.Windows.Controls.Control
+public class ColorPickerToolbarItem : AnnotationToolbarItem
 {
     static ColorPickerToolbarItem()
     {

@@ -6,7 +6,7 @@ namespace ViewSonic.NoteApp.Toolbar.Views
     /// <summary>
     /// Clear board item
     /// </summary>
-    public class ClearBoardToolbarItem : System.Windows.Controls.Control
+    public class ClearBoardToolbarItem : AnnotationToolbarItem
     {
         public ClearBoardToolbarItem()
         {

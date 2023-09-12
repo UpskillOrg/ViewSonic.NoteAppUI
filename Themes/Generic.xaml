@@ -246,11 +246,11 @@
             </Setter.Value>
         </Setter>
         <Style.Triggers>
-            <DataTrigger Binding="{Binding DataContext.IsToggled}" Value="True">
+            <DataTrigger Binding="{Binding IsToggled, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Value="True">
                 <Setter Property="Background" Value="{StaticResource Toolbar.SelectedItem.BackgroundBrush}" />
                 <Setter Property="Foreground" Value="{StaticResource Toolbar.SelectedItem.ForegroundBrush}" />
             </DataTrigger>
-            <DataTrigger Binding="{Binding DataContext.IsToggled}" Value="False">
+            <DataTrigger Binding="{Binding IsToggled, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Value="False">
                 <Setter Property="Background" Value="{StaticResource Toolbar.BackgroundBrush}" />
                 <Setter Property="Foreground" Value="{StaticResource Toolbar.ForegroundBrush}" />
             </DataTrigger>
@@ -311,11 +311,11 @@
             </Setter.Value>
         </Setter>
         <Style.Triggers>
-            <DataTrigger Binding="{Binding DataContext.IsToggled}" Value="True">
+            <DataTrigger Binding="{Binding IsToggled, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Value="True">
                 <Setter Property="Background" Value="{StaticResource Toolbar.SelectedItem.BackgroundBrush}" />
                 <Setter Property="Foreground" Value="{StaticResource Toolbar.SelectedItem.ForegroundBrush}" />
             </DataTrigger>
-            <DataTrigger Binding="{Binding DataContext.IsToggled}" Value="False">
+            <DataTrigger Binding="{Binding IsToggled, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Value="False">
                 <Setter Property="Background" Value="{StaticResource Toolbar.BackgroundBrush}" />
                 <Setter Property="Foreground" Value="{StaticResource Toolbar.ForegroundBrush}" />
             </DataTrigger>
@@ -353,11 +353,11 @@
             </Setter.Value>
         </Setter>
         <Style.Triggers>
-            <DataTrigger Binding="{Binding DataContext.IsToggled}" Value="True">
+            <DataTrigger Binding="{Binding IsToggled, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Value="True">
                 <Setter Property="Background" Value="{StaticResource Toolbar.SelectedItem.BackgroundBrush}" />
                 <Setter Property="Foreground" Value="{StaticResource Toolbar.SelectedItem.ForegroundBrush}" />
             </DataTrigger>
-            <DataTrigger Binding="{Binding DataContext.IsToggled}" Value="False">
+            <DataTrigger Binding="{Binding IsToggled, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Value="False">
                 <Setter Property="Background" Value="{StaticResource Toolbar.BackgroundBrush}" />
                 <Setter Property="Foreground" Value="{StaticResource Toolbar.ForegroundBrush}" />
             </DataTrigger>
@@ -398,14 +398,14 @@
                         </Grid>
                     </Grid>
                     <ControlTemplate.Triggers>
-                        <DataTrigger Binding="{Binding DataContext.IsPressed}" Value="True">
+                        <Trigger Property="IsPressed" Value="True">
                             <Setter Property="Background" Value="{StaticResource Toolbar.SelectedItem.BackgroundBrush}" />
                             <Setter Property="Foreground" Value="{StaticResource Toolbar.SelectedItem.ForegroundBrush}" />
-                        </DataTrigger>
-                        <DataTrigger Binding="{Binding DataContext.IsPresssed}" Value="False">
+                        </Trigger>
+                        <Trigger Property="IsPressed" Value="False">
                             <Setter Property="Background" Value="{StaticResource Toolbar.BackgroundBrush}" />
                             <Setter Property="Foreground" Value="{StaticResource Toolbar.ForegroundBrush}" />
-                        </DataTrigger>
+                        </Trigger>
                         <Trigger Property="IsMouseOver" Value="True">
                             <Setter Property="Background" Value="{StaticResource Toolbar.SelectedItem.BackgroundBrush}" />
                             <Setter Property="Foreground" Value="{StaticResource Toolbar.SelectedItem.ForegroundBrush}" />
@@ -625,6 +625,8 @@
                     <RowDefinition Height="32" />
                     <RowDefinition Height="32" />
                     <RowDefinition Height="32" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
                     <RowDefinition Height="32" />
                 </Grid.RowDefinitions>
                 <toolbar:DraggableToolbarItem x:Name="DraggableZone" Grid.Row="0" Grid.Column="0"
@@ -711,7 +713,7 @@
                     <Button x:Name="RedoToolbarButton" FocusVisualStyle="{StaticResource FocusVisualStyleDark}" Style="{StaticResource RedoToolbarButtonStyle}" />
                 </Border>
 
-                <Border Grid.Row="5"
+                <Border Grid.Row="7"
                     BorderThickness="1" BorderBrush="{StaticResource Toolbar.Item.BorderBrush}" CornerRadius="0 0 2 2"
                     Background="{StaticResource Toolbar.BackgroundBrush}">
                     <Button x:Name="EndSession"

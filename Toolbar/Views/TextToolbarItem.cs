@@ -3,7 +3,7 @@ using ViewSonic.NoteApp.Toolbar.ViewModels;
 
 namespace ViewSonic.NoteApp.Toolbar.Views
 {
-    public class TextToolbarItem : System.Windows.Controls.Control
+    public class TextToolbarItem : AnnotationToolbarItem
     {
         static TextToolbarItem()
         {
